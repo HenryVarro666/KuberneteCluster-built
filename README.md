@@ -366,6 +366,8 @@ kubeadm init \
 
 ​	https://blog.csdn.net/weixin_41298721/article/details/114916421
 
+​	http://www.manongjc.com/detail/23-umxjtqmublnyjwl.html
+
 
 
 或者使用配置文件引导：

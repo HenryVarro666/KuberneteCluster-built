@@ -492,6 +492,12 @@ kubectl apply -f calico.yaml
 kubectl get pods -n kube-system
 ```
 
+**PS：可能会出现calico pod处于not ready状态，此时可以参考这两篇博客：**
+
+​	https://blog.csdn.net/qq_39698985/article/details/123960741
+
+
+
 ##### 6.2 Flannel
 
 Flannel是CoreOS维护的一个网络组件，Flannel为每个Pod提供全局唯一的IP，Flannel使用ETCD来存储Pod子网与Node IP之间的关系。flanneld守护进程在每台主机上运行，并负责维护ETCD信息和路由数据包。

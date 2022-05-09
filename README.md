@@ -336,7 +336,7 @@ EOF
 由于版本更新频繁，这里可以指定版本号部署：（不指定即下载最新版本）
 
 ```shell
-yum install -y kubelet-1.18.0 kubeadm-1.18.0 kubectl-1.18.0
+yum install -y kubelet-1.20.0 kubeadm-1.20.0 kubectl-1.20.0
 
 
 systemctl enable kubelet
@@ -351,13 +351,7 @@ systemctl enable kubelet
 在192.168.159.143（Master）执行。
 
 ```shell
-kubeadm init \
-  --apiserver-advertise-address=192.168.159.143 \
-  --image-repository registry.aliyuncs.com/google_containers \
-  --kubernetes-version v1.18.0 \
-  --service-cidr=10.96.0.0/12 \      
-  --pod-network-cidr=10.244.0.0/16 \
-  --ignore-preflight-errors=all
+kubeadm init --apiserver-advertise-address=192.168.159.143 --image-repository registry.aliyuncs.com/google_containers --kubernetes-version v1.20.0 --service-cidr=10.96.0.0/12 --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=all
 ```
 
 - --apiserver-advertise-address 集群通告地址

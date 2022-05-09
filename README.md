@@ -311,7 +311,7 @@ cat > /etc/docker/daemon.json << EOF
 EOF
 
 
-systemctl restart docker
+systemctl daemon-reload &&  systemctl restart docker
 
 
 docker info | grep Cgroup   #查看docker的 cgroup driver

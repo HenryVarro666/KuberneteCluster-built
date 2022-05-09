@@ -183,6 +183,20 @@ $ kubeadm join <Master节点的IP和端口 >
 | k8s-node1  | 192.168.159.144 |
 | k8s-node2  | 192.168.159.145 |
 
+
+
+​	配置yum源和epel源：
+
+```shell
+mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+yum clean all
+yum makecache
+yum -y install epel-release
+```
+
+
+
 ​	关闭防火墙：
 
 ```shell
@@ -201,7 +215,7 @@ setenforce 0  # 临时
 
 ```shell
 swapoff -a  # 临时
-vim /etc/fstab  # 临时
+vim /etc/fstab  # 永久
 ```
 
 ​	设置主机名：

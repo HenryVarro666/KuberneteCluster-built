@@ -207,7 +207,7 @@ systemctl disable firewalld
 ​	关闭selinux：
 
 ```shell
-sed -i 's/enforcing/disabled/' /etc/selinux/config  # 永久
+sed -i 's/enforcing/disabled/' /etc/selinux/config  # 永久,进入后注释掉有swap的那一行
 setenforce 0  # 临时
 ```
 
@@ -297,7 +297,7 @@ Kubernetes默认CRI（容器运行时）为Docker，因此先安装Docker。
 
 ```shell
 wget https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo -O /etc/yum.repos.d/docker-ce.repo
-yum -y install docker-ce
+yum install -y docker-ce-19.03.5-3.el7 docker-ce-cli-19.03.5-3.el7 containerd.io
 systemctl enable docker && systemctl start docker
 ```
 
@@ -309,6 +309,9 @@ cat > /etc/docker/daemon.json << EOF
   "registry-mirrors": ["https://tzksttqp.mirror.aliyuncs.com"]
 }
 EOF
+
+vim /usr/lib/systemd/system/docker.service
+#在ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock  这一行添加 --exec-opt native.cgroupdriver=systemd  参数
 
 
 systemctl daemon-reload &&  systemctl restart docker
@@ -442,8 +445,7 @@ kubectl get nodes
 向集群添加新节点，执行在node结点上：
 
 ```shell
-kubeadm join 192.168.159.143:6443 --token esce21.q6hetwm8si29qxwn \
-    --discovery-token-ca-cert-hash sha256:00603a05805807501d7181c3d60b478788408cfe6cedefedb1f97569708be9c5
+kubeadm join 192.168.159.143:6443 --token esce21.q6hetwm8si29qxwn --discovery-token-ca-cert-hash sha256:00603a05805807501d7181c3d60b478788408cfe6cedefedb1f97569708be9c5
 ```
 
 默认token有效期为24小时，当过期之后，上述token就不可用了。这时就需要重新创建token，在master节点中操作：

@@ -348,7 +348,7 @@ EOF
 
 ##### 3.3 安装kubeadm，kubelet和kubectl
 
-由于版本更新频繁，这里可以指定版本号部署：（不指定即下载最新版本）
+由于版本更新频繁，这里可以指定版本号部署：（不指定即下载最新版本），这里使用的是1.20版本
 
 ```shell
 yum install -y kubelet-1.20.0 kubeadm-1.20.0 kubectl-1.20.0
@@ -400,7 +400,7 @@ vi kubeadm.conf
 
 apiVersion: kubeadm.k8s.io/v1beta2
 kind: ClusterConfiguration
-kubernetesVersion: v1.18.0
+kubernetesVersion: v1.20.0
 imageRepository: registry.aliyuncs.com/google_containers 
 networking:
   podSubnet: 10.244.0.0/16 
@@ -447,7 +447,7 @@ chown $(id -u):$(id -g) $HOME/.kube/config
 kubectl get nodes
 
 #  NAME         STATUS   ROLES    AGE   VERSION
-#  k8s-master   Ready    master   2m    v1.18.0
+#  k8s-master   Ready    master   2m    v1.20.0
 ```
 
 #### 5. 加入Kubernetes Node
@@ -518,6 +518,26 @@ kubectl get pods -n kube-system
 
 ​	https://blog.csdn.net/qq_39698985/article/details/123960741
 
+修改kube-proxy为IPVS模式：
+
+```shell
+yum install ipset -y
+yum install ipvsadm -y
+cat > /etc/sysconfig/modules/ipvs.modules <<EOF
+#!/bin/bash
+modprobe -- ip_vs
+modprobe -- ip_vs_rr
+modprobe -- ip_vs_wrr
+modprobe -- ip_vs_sh
+modprobe -- nf_conntrack_ipv4
+EOF
+# 使用lsmod | grep -e ip_vs -e nf_conntrack_ipv4命令查看是否已经正确加载所需的内核模块。
+chmod 755 /etc/sysconfig/modules/ipvs.modules && bash /etc/sysconfig/modules/ipvs.modules && lsmod | grep -e ip_vs -e nf_conntrack_ipv4
+
+kubectl edit cm kube-proxy -n kube-system   #将其中的mode=""  改为mode="ipvs"
+kubectl rollout restart daemonset kube-proxy -n kube-system 
+```
+
 
 
 ##### 6.2 Flannel
@@ -531,6 +551,8 @@ $ kubectl apply -f kube-flannel.yml
 ```
 
 修改国内镜像仓库。
+
+
 
 #### 7. 测试kubernetes集群
 

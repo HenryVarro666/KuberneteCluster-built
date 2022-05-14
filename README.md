@@ -497,7 +497,7 @@ Calico 在每一个计算节点利用 Linux Kernel 实现了一个高效的虚�
  https://docs.projectcalico.org/getting-started/kubernetes/quickstart 
 
 ```shell
-wget https://docs.projectcalico.org/manifests/calico.yaml
+wget https://docs.projectcalico.org/manifests/calico.yaml --no-check-certificate
 ```
 
 下载完后还需要修改里面配置项：

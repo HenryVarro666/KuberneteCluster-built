@@ -2,7 +2,7 @@
 
 # Kubernates
 
-
+[安装前准备](#table1)   
 
 [kubeadm部署](#table2)   
 
@@ -38,7 +38,7 @@
 | k8s-node1  | 192.168.159.144 |
 | k8s-node2  | 192.168.159.145 |
 
-​	升级centos内核：
+​	<a id="table1">升级centos内核：</a>
 
 ```shell
 rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org  #导入ELRepo仓库的公共密钥

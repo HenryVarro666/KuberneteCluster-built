@@ -21,7 +21,7 @@
 在开始之前，部署Kubernetes集群机器需要满足以下几个条件：
 
 - 一台或多台机器，操作系统 CentOS7.x-86_x64
-- 硬件配置：2GB或更多RAM，2个CPU或更多CPU，硬盘30GB或更多
+- 硬件配置：4GB或更多RAM，2个CPU或更多CPU，硬盘30GB或更多
 - 集群中所有机器之间网络互通
 - 可以访问外网，需要拉取镜像
 - 禁止swap分区
@@ -72,7 +72,7 @@ systemctl disable firewalld
 ​	关闭selinux：
 
 ```shell
-sed -i 's/enforcing/disabled/' /etc/selinux/config  # 永久,进入后注释掉有swap的那一行
+sed -i 's/enforcing/disabled/' /etc/selinux/config  # 永久
 setenforce 0  # 临时
 ```
 
@@ -80,7 +80,7 @@ setenforce 0  # 临时
 
 ```shell
 swapoff -a  # 临时
-vim /etc/fstab  # 永久
+vim /etc/fstab  # 永久,进入后注释掉有swap的那一行
 ```
 
 ​	设置主机名：
@@ -141,7 +141,7 @@ DEVICE="ens33"
 ONBOOT="yes"
 IPADDR="192.168.159.143"    #从这一行开始都是要添加的，这里添加上述查看到的ip地址
 PREFIX="24"
-GATEWAY="192.168.159.2"
+GATEWAY="192.168.159.2"    #需要与ip地址相对应
 DNS1="202.119.248.66"   #我这里是我学校的DNS，你可以自己选择一个公有DNS
 ```
 
@@ -154,11 +154,11 @@ ping www.baidu.com
 
 
 
-### 	(一)使用minikube（很小，仅供学习用，不是用于生产）
+### 	(一)使用minikube（很小，仅供学习用，不适用于生产）
 
 ​		可以在官网上下载使用
 
-### <a id="table2">(二)、使用kubeadmin安装部署(版本可依据个人情况，本文使用的是1.20.0)</a>
+### <a id="table2">(二)、使用kubeadm安装部署(版本可依据个人情况，本文使用的是1.20.0)</a>
 
 kubeadm是官方社区推出的一个用于快速部署kubernetes集群的工具。
 
@@ -254,7 +254,7 @@ kubeadm init --apiserver-advertise-address=192.168.159.143 --image-repository re
 
   
 
-**PS：可能会出现It seems like the kubelet isn't running or healthy的错误，此时可以参考这两篇博客：**
+**PS：可能会出现It seems like the kubelet isn't running or healthy的错误，此时可以参考这三篇博客：**
 
 ​	https://blog.csdn.net/boling_cavalry/article/details/91306095
 

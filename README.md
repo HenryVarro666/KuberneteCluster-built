@@ -28,7 +28,7 @@
 
 ### 2. 准备环境
 
-单Master架构图
+Kubernetes架构图
 
  ![kubernetes架构图](https://github.com/Youngpig1998/KuberneteCluster-built/blob/main/k8s-arc.jpg) 
 
@@ -91,7 +91,7 @@ vim /etc/fstab  # 永久,进入后注释掉有swap的那一行
 hostnamectl set-hostname <hostname>
 ```
 
-​	在master添加hosts：      node节点可以不需要添加hosts
+​	在master添加hosts：      PS：node节点可以不需要添加hosts
 
 ```shell
 cat >> /etc/hosts << EOF

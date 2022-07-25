@@ -30,7 +30,7 @@
 
 单Master架构图
 
- ![kubernetesæ¶æå¾](https://github.com/Youngpig1998/KuberneteCluster-built/blob/main/k8s-arc.jpg) 
+ ![kubernetes架构图](https://github.com/Youngpig1998/KuberneteCluster-built/blob/main/k8s-arc.jpg) 
 
 
 

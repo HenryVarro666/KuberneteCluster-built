@@ -30,7 +30,9 @@
 
 单Master架构图
 
- ![kubernetesæ¶æå¾](https://blog-1252881505.cos.ap-beijing.myqcloud.com/k8s/single-master.jpg) 
+ ![kubernetesæ¶æå¾](https://github.com/Youngpig1998/KuberneteCluster-built/blob/main/k8s-arc.jpg) 
+
+
 
 | 角色       | IP              |
 | ---------- | --------------- |

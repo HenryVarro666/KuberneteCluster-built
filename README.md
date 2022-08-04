@@ -1,164 +1,32 @@
  
 
-# Kubernates
-
-[安装前准备](#table1)   
-
-[kubeadm部署](#table2)   
-
-[二进制部署](#table3)  
+# Kubernates安装
 
 
 
-## 一、K8S概述
+| 步骤            | 执行手册                    |
+| --------------- | --------------------------- |
+| 安装前准备      | [安装前准备](./pre-request) |
+| 使用kubeadm安装 | [kubeadm部署](#table2)      |
+| 使用二进制安装  | [二进制部署](#table3)       |
 
-## 二、K8S快速入门
 
-## 三、k8s的安装部署
 
-### 1. 安装要求
-
-在开始之前，部署Kubernetes集群机器需要满足以下几个条件：
-
-- 一台或多台机器，操作系统 CentOS7.x-86_x64
-- 硬件配置：4GB或更多RAM，2个CPU或更多CPU，硬盘30GB或更多
-- 集群中所有机器之间网络互通
-- 可以访问外网，需要拉取镜像
-- 禁止swap分区
-
-### 2. 准备环境
+## 一、准备环境
 
 Kubernetes架构图
 
  ![kubernetes架构图](https://github.com/Youngpig1998/KuberneteCluster-built/blob/main/k8s-arc.jpg) 
 
-
-
-| 角色       | IP              |
+| Roles      | IP              |
 | ---------- | --------------- |
 | k8s-master | 192.168.159.143 |
 | k8s-node1  | 192.168.159.144 |
 | k8s-node2  | 192.168.159.145 |
 
-​	<a id="table1">升级centos内核：</a>
-
-```shell
-rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org  #导入ELRepo仓库的公共密钥
-rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm  #安装ELRepo仓库的yum源
-yum --disablerepo="*" --enablerepo="elrepo-kernel" list available  #查看可用的系统内核包
-yum --enablerepo=elrepo-kernel install kernel-ml  #安装最新版本内核
-grub2-set-default 0
-grub2-mkconfig -o /boot/grub2/grub.cfg  #生成 grub 配置文件并重启
-reboot
-```
-
-​	配置yum源和epel源：
-
-```shell
-mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
-wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
-yum clean all
-yum makecache
-yum -y install epel-release
-```
+​	在每台机子上都需执行！！
 
 
-
-​	关闭防火墙：
-
-```shell
-systemctl stop firewalld
-systemctl disable firewalld
-```
-
-​	关闭selinux：
-
-```shell
-sed -i 's/enforcing/disabled/' /etc/selinux/config  # 永久
-setenforce 0  # 临时
-```
-
-​	关闭swap：
-
-```shell
-swapoff -a  # 临时
-vim /etc/fstab  # 永久,进入后注释掉有swap的那一行
-```
-
-​	设置主机名：
-
-```shell
-hostnamectl set-hostname <hostname>
-```
-
-​	在master添加hosts：      PS：node节点可以不需要添加hosts
-
-```shell
-cat >> /etc/hosts << EOF
-192.168.159.143 k8s-master
-192.168.159.144 k8s-node1
-192.168.159.145 k8s-node2
-EOF
-```
-
-​	将桥接的IPv4流量传递到iptables的链：
-
-```shell
-cat > /etc/sysctl.d/k8s.conf << EOF
-net.bridge.bridge-nf-call-ip6tables = 1
-net.bridge.bridge-nf-call-iptables = 1
-EOF
-
-sysctl --system  # 生效
-```
-
-​	时间同步：    必须要同步才行
-
-```shell
-yum install ntpdate -y
-ntpdate time.windows.com
-```
-
-​	配置静态ip地址
-
-```shell
-ifconfig   #查看IP地址
-
-
-vim /etc/sysconfig/network-scripts/ifcfg-ens33 
-TYPE="Ethernet"
-PROXY_METHOD="none"
-BROWSER_ONLY="no"
-BOOTPROTO="static"    #这里要修改为static   
-DEFROUTE="yes"
-IPV4_FAILURE_FATAL="no"
-IPV6INIT="yes"
-IPV6_AUTOCONF="yes"
-IPV6_DEFROUTE="yes"
-IPV6_FAILURE_FATAL="no"
-IPV6_ADDR_GEN_MODE="stable-privacy"
-NAME="ens33"
-UUID="cd4ce59b-0bcf-42b8-ab7d-312644bb46f3"
-DEVICE="ens33"
-ONBOOT="yes"
-IPADDR="192.168.159.143"    #从这一行开始都是要添加的，这里添加上述查看到的ip地址
-PREFIX="24"
-GATEWAY="192.168.159.2"    #需要与ip地址相对应
-DNS1="202.119.248.66"   #我这里是我学校的DNS，你可以自己选择一个公有DNS
-```
-
-​	重启网络服务
-
-```shell
-systemctl restart network
-ping www.baidu.com
-```
-
-
-
-### 	(一)使用minikube（很小，仅供学习用，不适用于生产）
-
-​		可以在官网上下载使用
 
 ### <a id="table2">(二)、使用kubeadm安装部署(版本可依据个人情况，本文使用的是1.20.0)</a>
 
@@ -176,7 +44,7 @@ $ kubeadm join <Master节点的IP和端口 >
 
 #### 1. 安装Docker/kubeadm/kubelet【所有节点】
 
-Kubernetes默认CRI（容器运行时）为Docker，因此先安装Docker。
+Kubernetes默认CRI（容器运行时）为Docker，因此先安装Docker。不过在Kubernetes1.24中，已经正式弃用Docker，而使用containerd作为CRI。
 
 ##### 1.1 安装Docker（注意版本与Kubernetes版本的兼容性）
 

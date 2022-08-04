@@ -4,7 +4,7 @@
 
 
 
-|           Steps            |           执行手册           |
+|           Steps            |           Manuals            |
 | :------------------------: | :--------------------------: |
 |        Pre-request         | [pre-request](./pre-request) |
 | Use kubeadm to install k8s |     [kubeadm](./kubeadm)     |
